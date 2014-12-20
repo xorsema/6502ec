@@ -181,6 +181,7 @@ void cpu6502_step(){
   opfunc f = opcode_table[op];
   f();
   regPC += opcode_sztable[op];
+  regSP &= 0x01FF;
 }
 
 void cpu6502_print(){
@@ -370,12 +371,35 @@ void ld(u8 *dst, u8 val){
   }
 }
 
+void lsr(u8 *target){
+  regFlags &= ~(CARRY_MASK | ZERO_MASK | NEG_MASK);
+  regFlags |= (*target & 1) ? CARRY_MASK : 0;
+  *target = *target >> 1;
+  if(*target == 0){
+    regFlags |= ZERO_MASK;
+  }
+  if(*target & 0x80){
+    regFlags |= NEG_MASK;
+  }
+}
+
+void ora(u8 val){
+  regFlags &= ~(ZERO_MASK | NEG_MASK);
+  regA |= val;
+  if(regA == 0){
+    regFlags |= ZERO_MASK;
+  }
+  if(regA & 0x80){
+    regFlags |= NEG_MASK;
+  }
+}
+
 void opfunc_0x0(){
 
 }
 
 void opfunc_0x1(){
-
+  ora(*iix());
 }
 
 void opfunc_0x2(){
@@ -391,7 +415,7 @@ void opfunc_0x4(){
 }
 
 void opfunc_0x5(){
-
+  ora(*zp());
 }
 
 void opfunc_0x6(){
@@ -403,11 +427,11 @@ void opfunc_0x7(){
 }
 
 void opfunc_0x8(){
-
+  cpuMem[regSP--] = regFlags;
 }
 
 void opfunc_0x9(){
-
+  ora(imm());
 }
 
 void opfunc_0xA(){
@@ -423,7 +447,7 @@ void opfunc_0xC(){
 }
 
 void opfunc_0xD(){
-
+  ora(*abs_());
 }
 
 void opfunc_0xE(){
@@ -439,7 +463,7 @@ void opfunc_0x10(){
 }
 
 void opfunc_0x11(){
-
+  ora(*iiy());
 }
 
 void opfunc_0x12(){
@@ -455,7 +479,7 @@ void opfunc_0x14(){
 }
 
 void opfunc_0x15(){
-
+  ora(*zpx());
 }
 
 void opfunc_0x16(){
@@ -471,7 +495,7 @@ void opfunc_0x18(){
 }
 
 void opfunc_0x19(){
-
+  ora(*absy());
 }
 
 void opfunc_0x1A(){
@@ -487,7 +511,7 @@ void opfunc_0x1C(){
 }
 
 void opfunc_0x1D(){
-
+  ora(*absx());
 }
 
 void opfunc_0x1E(){
@@ -531,7 +555,7 @@ void opfunc_0x27(){
 }
 
 void opfunc_0x28(){
-
+  regFlags = cpuMem[regSP++];
 }
 
 void opfunc_0x29(){
@@ -651,7 +675,7 @@ void opfunc_0x45(){
 }
 
 void opfunc_0x46(){
-
+  lsr(zp());
 }
 
 void opfunc_0x47(){
@@ -659,7 +683,7 @@ void opfunc_0x47(){
 }
 
 void opfunc_0x48(){
-
+  cpuMem[regSP--] = regA;
 }
 
 void opfunc_0x49(){
@@ -667,7 +691,7 @@ void opfunc_0x49(){
 }
 
 void opfunc_0x4A(){
-
+  lsr(&regA);
 }
 
 void opfunc_0x4B(){
@@ -683,7 +707,7 @@ void opfunc_0x4D(){
 }
 
 void opfunc_0x4E(){
-
+  lsr(abs_());
 }
 
 void opfunc_0x4F(){
@@ -715,7 +739,7 @@ void opfunc_0x55(){
 }
 
 void opfunc_0x56(){
-
+  lsr(zpx());
 }
 
 void opfunc_0x57(){
@@ -747,7 +771,7 @@ void opfunc_0x5D(){
 }
 
 void opfunc_0x5E(){
-
+  lsr(absx());
 }
 
 void opfunc_0x5F(){
@@ -787,7 +811,14 @@ void opfunc_0x67(){
 }
 
 void opfunc_0x68(){
-
+  regFlags &= ~(ZERO_MASK | NEG_MASK);
+  regA = cpuMem[regSP++];
+  if(regA == 0){
+    regFlags |= ZERO_MASK;
+  }
+  if(regA & 0x80){
+    regFlags |= NEG_MASK;
+  }
 }
 
 void opfunc_0x69(){
