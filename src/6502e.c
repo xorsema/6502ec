@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <6502e.h>
 
-u16 regPC, regSP;
+u16 regPC, regSP = 0x1FF;
 u8 regA, regX, regY, regFlags;
 u8 cpuMem[65536];
 
@@ -555,7 +555,7 @@ void opfunc_0x27(){
 }
 
 void opfunc_0x28(){
-  regFlags = cpuMem[regSP++];
+  regFlags = cpuMem[++regSP];
 }
 
 void opfunc_0x29(){
@@ -812,7 +812,7 @@ void opfunc_0x67(){
 
 void opfunc_0x68(){
   regFlags &= ~(ZERO_MASK | NEG_MASK);
-  regA = cpuMem[regSP++];
+  regA = cpuMem[++regSP];
   if(regA == 0){
     regFlags |= ZERO_MASK;
   }
