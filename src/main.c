@@ -6,12 +6,14 @@
 int main(int argc, char **argv){
   char c = 0;
 
-  if(argc > 1){
-    cpu6502_loadfile(argv[1], 0);
-    cpu6502_setPC(0);
+  if(argc > 2){
+    int ldloc = strtol(argv[2], NULL, 16);
+    int pcloc = (argc > 3) ? strtol(argv[3], NULL, 16) : ldloc;
+    cpu6502_loadfile(argv[1], ldloc);
+    cpu6502_setPC(pcloc);
   }
   else{
-    printf("usage: %s <filename.bin>\n", argv[0]);
+    printf("usage: %s <filename.bin> <load location> <start location>\n", argv[0]);
     return 1;
   }
   

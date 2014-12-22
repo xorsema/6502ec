@@ -425,6 +425,39 @@ void ror(u8 *target){
   }
 }
 
+void sbc(u8 val){
+  int r = regA - val;
+  regFlags &= ~(OVER_MASK | CARRY_MASK | NEG_MASK | ZERO_MASK);
+  if(r > 127 || r < -128){
+    regFlags |= OVER_MASK;
+  }
+  if(!(((unsigned)r) > 255)){
+    regFlags |= CARRY_MASK;
+  }
+  if(r & 0x80){
+    regFlags |= NEG_MASK;
+  }
+  if(r == 0){
+    regFlags |= ZERO_MASK;
+  }
+  regA = (u8)r;
+}
+
+void st(u8 src, u8 *dst){
+  *dst = src;
+}
+
+void trs(u8 src, u8 *dst){
+  regFlags &= ~(ZERO_MASK | NEG_MASK);
+  *dst = src;
+  if(*dst == 0){
+    regFlags |= ZERO_MASK;
+  }
+  if(*dst & 0x80){
+    regFlags |= NEG_MASK;
+  }
+}
+
 void opfunc_0x0(){
 
 }
@@ -652,7 +685,7 @@ void opfunc_0x37(){
 }
 
 void opfunc_0x38(){
-
+  sex(CARRY_MASK);
 }
 
 void opfunc_0x39(){
@@ -684,7 +717,9 @@ void opfunc_0x3F(){
 }
 
 void opfunc_0x40(){
-
+  regFlags = cpuMem[++regSP];
+  regSP += 2;
+  regPC = *(u16*)&cpuMem[regSP];
 }
 
 void opfunc_0x41(){
@@ -916,7 +951,7 @@ void opfunc_0x77(){
 }
 
 void opfunc_0x78(){
-
+  sex(INTER_MASK);
 }
 
 void opfunc_0x79(){
@@ -952,7 +987,7 @@ void opfunc_0x80(){
 }
 
 void opfunc_0x81(){
-
+  st(regA, iix());
 }
 
 void opfunc_0x82(){
@@ -964,15 +999,15 @@ void opfunc_0x83(){
 }
 
 void opfunc_0x84(){
-
+  st(regY, zp());
 }
 
 void opfunc_0x85(){
-
+  st(regA, zp());
 }
 
 void opfunc_0x86(){
-
+  st(regX, zp());
 }
 
 void opfunc_0x87(){
@@ -988,7 +1023,7 @@ void opfunc_0x89(){
 }
 
 void opfunc_0x8A(){
-
+  trs(regX, &regA);
 }
 
 void opfunc_0x8B(){
@@ -996,15 +1031,15 @@ void opfunc_0x8B(){
 }
 
 void opfunc_0x8C(){
-
+  st(regY, abs_());
 }
 
 void opfunc_0x8D(){
-
+  st(regA, abs_());
 }
 
 void opfunc_0x8E(){
-
+  st(regX, abs_());
 }
 
 void opfunc_0x8F(){
@@ -1016,7 +1051,7 @@ void opfunc_0x90(){
 }
 
 void opfunc_0x91(){
-
+  st(regA, iiy());
 }
 
 void opfunc_0x92(){
@@ -1028,15 +1063,15 @@ void opfunc_0x93(){
 }
 
 void opfunc_0x94(){
-
+  st(regY, zpx());
 }
 
 void opfunc_0x95(){
-
+  st(regA, zpx());
 }
 
 void opfunc_0x96(){
-
+  st(regX, zpy());
 }
 
 void opfunc_0x97(){
@@ -1044,15 +1079,15 @@ void opfunc_0x97(){
 }
 
 void opfunc_0x98(){
-
+  trs(regY, &regA);
 }
 
 void opfunc_0x99(){
-
+  st(regA, absy());
 }
 
 void opfunc_0x9A(){
-
+  ((u8*)&regSP)[1] = regX;
 }
 
 void opfunc_0x9B(){
@@ -1064,7 +1099,7 @@ void opfunc_0x9C(){
 }
 
 void opfunc_0x9D(){
-
+  st(regA, absx());
 }
 
 void opfunc_0x9E(){
@@ -1108,7 +1143,7 @@ void opfunc_0xA7(){
 }
 
 void opfunc_0xA8(){
-
+  trs(regA, &regY);
 }
 
 void opfunc_0xA9(){
@@ -1116,7 +1151,7 @@ void opfunc_0xA9(){
 }
 
 void opfunc_0xAA(){
-
+  trs(regA, &regX);
 }
 
 void opfunc_0xAB(){
@@ -1180,7 +1215,7 @@ void opfunc_0xB9(){
 }
 
 void opfunc_0xBA(){
-
+  trs(((u8*)&regSP)[1], &regX);
 }
 
 void opfunc_0xBB(){
@@ -1336,7 +1371,7 @@ void opfunc_0xE0(){
 }
 
 void opfunc_0xE1(){
-
+  sbc(*iix());
 }
 
 void opfunc_0xE2(){
@@ -1352,7 +1387,7 @@ void opfunc_0xE4(){
 }
 
 void opfunc_0xE5(){
-
+  sbc(*zp());
 }
 
 void opfunc_0xE6(){
@@ -1368,7 +1403,7 @@ void opfunc_0xE8(){
 }
 
 void opfunc_0xE9(){
-
+  sbc(imm());
 }
 
 void opfunc_0xEA(){
@@ -1384,7 +1419,7 @@ void opfunc_0xEC(){
 }
 
 void opfunc_0xED(){
-
+  sbc(*abs_());
 }
 
 void opfunc_0xEE(){
@@ -1400,7 +1435,7 @@ void opfunc_0xF0(){
 }
 
 void opfunc_0xF1(){
-
+  sbc(*iiy());
 }
 
 void opfunc_0xF2(){
@@ -1416,7 +1451,7 @@ void opfunc_0xF4(){
 }
 
 void opfunc_0xF5(){
-
+  sbc(*zpx());
 }
 
 void opfunc_0xF6(){
@@ -1428,11 +1463,11 @@ void opfunc_0xF7(){
 }
 
 void opfunc_0xF8(){
-
+  sex(DEC_MASK);
 }
 
 void opfunc_0xF9(){
-
+  sbc(*absy());
 }
 
 void opfunc_0xFA(){
