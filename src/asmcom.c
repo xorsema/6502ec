@@ -85,7 +85,7 @@ void asmcom_drawscreen(u8 *screenmem){
   SDL_Color c;
   u8 b;
   
-  for(i = 0; i < 0x400; i++, x = (x+1) % 32, y += (i % 32 == 0) ? 1 : 0){
+  for(i = 0; i < 0x400; i++, x = (x+1) % 32, y += ((i+1) % 32 == 0) ? 1 : 0){
     b = screenmem[i];
     c = COLOR_PALETTE[b & 0xf];
     r.x = x*PIXEL_SIZE;
