@@ -190,7 +190,7 @@ void cpu6502_print(){
 }
 
 void cpu6502_load(u16 loc, u8 *code, unsigned length){
-  memcpy(cpuMem+loc, code, (loc+length > 65535) ? 65535 - length : length);
+  memcpy(cpuMem+loc, code, length);
 }
 
 void cpu6502_loadfile(const char *fln, u16 loc){
@@ -210,6 +210,10 @@ void cpu6502_loadfile(const char *fln, u16 loc){
 
 void cpu6502_setPC(u16 val){
   regPC = val;
+}
+
+u8 *cpu6502_getMemPtr(){
+  return cpuMem;
 }
 
 /* Get immediate 8 bit constant */

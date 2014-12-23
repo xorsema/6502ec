@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <6502e.h>
+#include <asmcom.h>
 
 int main(int argc, char **argv){
   char c = 0;
@@ -17,10 +18,14 @@ int main(int argc, char **argv){
     return 1;
   }
   
-  do{
+  /*do{
     cpu6502_print();
     c = getchar();
     cpu6502_step();
-  }while(c != 'q');
+    }while(c != 'q');*/
+
+  asmcom_init();
+  asmcom_loop();
+  asmcom_quit();
   return 0;
 }

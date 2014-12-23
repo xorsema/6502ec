@@ -8,8 +8,8 @@ TARGET	     = 6502ec
 SOURCES	     = $(shell echo src/*.c)
 HEADERS	     = $(shell echo include/*.h)
 OBJECTS	     = $(SOURCES:.c=.o)
-LIBCFLAGS    = 
-LIBS	     = 
+LIBCFLAGS    = $(shell sdl2-config --cflags)
+LIBS	     = $(shell sdl2-config --libs)
 
 all: $(TARGET)
 
