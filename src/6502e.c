@@ -239,19 +239,19 @@ u8 *abs_(){
 }
 
 u8 *absx(){
-  return &cpuMem[regX+*(u16*)&cpuMem[regPC+1]];
+  return &cpuMem[(u16)(regX+*(u16*)&cpuMem[regPC+1])];
 }
 
 u8 *absy(){
-  return &cpuMem[regY+*(u16*)&cpuMem[regPC+1]];
+  return &cpuMem[(u16)(regY+*(u16*)&cpuMem[regPC+1])];
 }
 
 u8 *iix(){
-  return &cpuMem[*(u16*)&cpuMem[regX+cpuMem[regPC+1]]];
+  return &cpuMem[*(u16*)&cpuMem[(u8)(regX+cpuMem[regPC+1])]];
 }
 
 u8 *iiy(){
-  return &cpuMem[regY+*(u16*)&cpuMem[cpuMem[regPC+1]]];
+  return &cpuMem[(u16)(regY+*(u16*)&cpuMem[cpuMem[regPC+1]])];
 }
 
 void adc(u8 val){

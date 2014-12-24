@@ -30,6 +30,7 @@ const SDL_Color COLOR_PALETTE[0x10] = {
   {0xbb, 0xbb, 0xbb, 0xff}
 };
   
+static int asmcom_CpuThread(void *ptr);
 
 void asmcom_init(){
   srand(time(NULL));
@@ -54,6 +55,13 @@ void asmcom_quit(){
   SDL_DestroyRenderer(g_renderer);
   SDL_DestroyWindow(g_window);
   SDL_Quit();
+}
+
+/* Used for debug mode only */
+void asmcom_renderframe(){
+  SDL_RenderClear(g_renderer);
+  asmcom_drawscreen(cpu6502_getMemPtr()+0x200);
+  SDL_RenderPresent(g_renderer);
 }
 
 void asmcom_loop(){
@@ -85,7 +93,7 @@ void asmcom_drawscreen(u8 *screenmem){
   SDL_Color c;
   u8 b;
   
-  for(i = 0; i < 0x400; i++, x = (x+1) % 32, y += ((i+1) % 32 == 0) ? 1 : 0){
+  for(i = 0; i < 0x400; i++, x = (x+1) % 32, y += (i % 32 == 0) ? 1 : 0){
     b = screenmem[i];
     c = COLOR_PALETTE[b & 0xf];
     r.x = x*PIXEL_SIZE;
