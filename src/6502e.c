@@ -255,7 +255,7 @@ u8 *iiy(){
 }
 
 void adc(u8 val){
-  int r = regA + val;
+  int r = regA + val + (CARRY_SET ? 1 : 0);
   regFlags &= ~(OVER_MASK | CARRY_MASK | NEG_MASK | ZERO_MASK);
   if(r > 127 || r < -128){
     regFlags |= OVER_MASK;
@@ -430,7 +430,7 @@ void ror(u8 *target){
 }
 
 void sbc(u8 val){
-  int r = regA - val;
+  int r = regA + ~val + (CARRY_SET ? 1 : 0);
   regFlags &= ~(OVER_MASK | CARRY_MASK | NEG_MASK | ZERO_MASK);
   if(r > 127 || r < -128){
     regFlags |= OVER_MASK;
