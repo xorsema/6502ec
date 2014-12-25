@@ -6,6 +6,8 @@
 u16 regPC, regSP = 0x1FF;
 u8 regA, regX, regY, regFlags;
 u8 cpuMem[65536];
+unsigned cycleCount;
+unsigned extraCycles;
 
 const u8 opcode_sztable[256] = {
   0, 2, 0, 2, 2, 2, 2, 2, 1, 2, 1, 2, 3, 3, 3, 3,
@@ -182,6 +184,7 @@ void cpu6502_step(){
   f();
   regPC += opcode_sztable[op];
   regSP &= 0x01FF;
+  cycleCount = opcode_cycletable[op] + extraCycles;
 }
 
 void cpu6502_print(){
@@ -214,6 +217,10 @@ void cpu6502_setPC(u16 val){
 
 u8 *cpu6502_getMemPtr(){
   return cpuMem;
+}
+
+unsigned cpu6502_getCycles(){
+  return cycleCount;
 }
 
 /* Get immediate 8 bit constant */

@@ -31,6 +31,7 @@ void cpu6502_load(u16 loc, u8 *code, unsigned length);
 void cpu6502_loadfile(const char *fln, u16 loc);
 void cpu6502_setPC(u16 val);
 u8 *cpu6502_getMemPtr();
+unsigned cpu6502_getCycles();
 
 void opfunc_0x0();
 void opfunc_0x1();

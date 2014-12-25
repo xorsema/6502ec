@@ -9,5 +9,5 @@ void asmcom_renderframe();
 void die(const char *msg);
 
 #define PIXEL_SIZE 8
-
+#define CLOCK_SPEED 1000000
 #endif
