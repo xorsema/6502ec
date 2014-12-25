@@ -591,8 +591,8 @@ void opfunc_0x1F(){
 }
 
 void opfunc_0x20(){
-  *(u16*)&cpuMem[regSP] = regPC + 3;
   regSP -= 2;
+  *(u16*)&cpuMem[regSP] = regPC + 3;
   regPC = *(u16*)&cpuMem[regPC+1];
 }
 
@@ -851,8 +851,8 @@ void opfunc_0x5F(){
 }
 
 void opfunc_0x60(){
-  regSP += 2;
   regPC = *(u16*)&cpuMem[regSP];
+  regSP += 2;
 }
 
 void opfunc_0x61(){
